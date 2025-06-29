@@ -144,23 +144,8 @@ let doubanPageStart = 0;
 const doubanPageSize = 16; // 一次显示的项目数量
 
 // 初始化豆瓣功能
+// 初始化豆瓣功能
 function initDouban() {
-    loadUserTags();
-
-    // 渲染电影/电视剧切换
-    renderDoubanMovieTvSwitch();
-
-    // 渲染豆瓣标签
-    renderDoubanTags();
-
-    // 换一批按钮事件监听
-    setupDoubanRefreshBtn();
-
-    // 初始加载热门内容
-    if (localStorage.getItem('doubanEnabled') === 'true') {
-        renderRecommend(doubanCurrentTag, doubanPageSize, doubanPageStart);
-    }
- 
     // 设置豆瓣开关的初始状态
     const doubanToggle = document.getElementById('doubanToggle');
     if (doubanToggle) {
@@ -199,6 +184,24 @@ function initDouban() {
         // 滚动到页面顶部
         window.scrollTo(0, 0);
     }
+
+    // 加载用户标签
+    loadUserTags();
+
+    // 渲染电影/电视剧切换
+    renderDoubanMovieTvSwitch();
+    
+    // 渲染豆瓣标签
+    renderDoubanTags();
+    
+    // 换一批按钮事件监听
+    setupDoubanRefreshBtn();
+    
+    // 初始加载热门内容
+    if (localStorage.getItem('doubanEnabled') === 'true') {
+        renderRecommend(doubanCurrentTag, doubanPageSize, doubanPageStart);
+    }
+}
 // 渲染电影/电视剧切换器
 // ... existing code ...
 
