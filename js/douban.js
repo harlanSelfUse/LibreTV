@@ -2,39 +2,38 @@
 
 // 豆瓣标签列表 - 修改为默认标签
 let defaultMovieTags = ['热门', '最新', '经典', '豆瓣高分', '冷门佳片', '华语', '欧美', '韩国', '日本', '动作', '喜剧', '爱情', '科幻', '悬疑', '恐怖', '治愈'];
-let defaultTvTags = ['热门', '美剧', '英剧', '韩剧', '日剧', '国产剧', '港剧', '综艺', '纪录片'];
-// 新增动漫默认标签
-let defaultDongmanTags = ['热门', '新番', '经典', '热血', '冒险', '搞笑', '校园', '恋爱', '奇幻', '科幻', '治愈', '悬疑'];
+let defaultTvTags = ['热门', '动漫', '美剧', '英剧', '韩剧', '日剧', '国产剧', '港剧', '动画', '综艺', '纪录片'];
 
-// 用户标签列表
+// 用户标签列表 - 存储用户实际使用的标签（包含保留的系统标签和用户添加的自定义标签）
 let movieTags = [];
 let tvTags = [];
-// 新增动漫用户标签
-let dongmanTags = [];
 
 // 加载用户标签
 function loadUserTags() {
     try {
+        // 尝试从本地存储加载用户保存的标签
         const savedMovieTags = localStorage.getItem('userMovieTags');
         const savedTvTags = localStorage.getItem('userTvTags');
-        // 新增动漫标签加载
-        const savedDongmanTags = localStorage.getItem('userDongmanTags');
         
-        if (savedMovieTags) movieTags = JSON.parse(savedMovieTags);
-        else movieTags = [...defaultMovieTags];
+        // 如果本地存储中有标签数据，则使用它
+        if (savedMovieTags) {
+            movieTags = JSON.parse(savedMovieTags);
+        } else {
+            // 否则使用默认标签
+            movieTags = [...defaultMovieTags];
+        }
         
-        if (savedTvTags) tvTags = JSON.parse(savedTvTags);
-        else tvTags = [...defaultTvTags];
-        
-        // 加载动漫标签
-        if (savedDongmanTags) dongmanTags = JSON.parse(savedDongmanTags);
-        else dongmanTags = [...defaultDongmanTags];
-        
+        if (savedTvTags) {
+            tvTags = JSON.parse(savedTvTags);
+        } else {
+            // 否则使用默认标签
+            tvTags = [...defaultTvTags];
+        }
     } catch (e) {
         console.error('加载标签失败：', e);
+        // 初始化为默认值，防止错误
         movieTags = [...defaultMovieTags];
         tvTags = [...defaultTvTags];
-        dongmanTags = [...defaultDongmanTags];
     }
 }
 
@@ -43,8 +42,6 @@ function saveUserTags() {
     try {
         localStorage.setItem('userMovieTags', JSON.stringify(movieTags));
         localStorage.setItem('userTvTags', JSON.stringify(tvTags));
-        // 新增动漫标签保存
-        localStorage.setItem('userDongmanTags', JSON.stringify(dongmanTags));
     } catch (e) {
         console.error('保存标签失败：', e);
         showToast('保存标签失败', 'error');
@@ -263,9 +260,8 @@ function renderDoubanMovieTvSwitch() {
     // 获取切换按钮元素
     const movieToggle = document.getElementById('douban-movie-toggle');
     const tvToggle = document.getElementById('douban-tv-toggle');
-    const dmToggle = document.getElementById('douban-dongman-toggle');
 
-    if (!movieToggle || !tvToggle || !dmToggle) return;
+    if (!movieToggle ||!tvToggle) return;
 
     movieToggle.addEventListener('click', function() {
         if (doubanMovieTvCurrentSwitch !== 'movie') {
@@ -317,29 +313,6 @@ function renderDoubanMovieTvSwitch() {
             }
         }
     });
-
-        // 新增动漫按钮点击事件
-        dmToggle.addEventListener('click', function() {
-            if (doubanMovieTvCurrentSwitch !== 'dongman') {
-                dmToggle.classList.add('bg-pink-600', 'text-white');
-                dmToggle.classList.remove('text-gray-300');
-                
-                movieToggle.classList.remove('bg-pink-600', 'text-white');
-                tvToggle.classList.remove('bg-pink-600', 'text-white');
-                
-                doubanMovieTvCurrentSwitch = 'dongman';
-                doubanCurrentTag = '热门';
-                doubanPageStart = 0;
-    
-                renderDoubanTags(dongmanTags);
-                setupDoubanRefreshBtn();
-                
-                if (localStorage.getItem('doubanEnabled') === 'true') {
-                    renderRecommend(doubanCurrentTag, doubanPageSize, doubanPageStart);
-                }
-            }
-        });
-
 }
 
 // 渲染豆瓣标签选择器
@@ -347,10 +320,8 @@ function renderDoubanTags(tags) {
     const tagContainer = document.getElementById('douban-tags');
     if (!tagContainer) return;
     
-    // 确定当前标签类型
-    const currentTags = doubanMovieTvCurrentSwitch === 'movie' ? movieTags : 
-                       doubanMovieTvCurrentSwitch === 'tv' ? tvTags : 
-                       dongmanTags;
+    // 确定当前应该使用的标签列表
+    const currentTags = doubanMovieTvCurrentSwitch === 'movie' ? movieTags : tvTags;
     
     // 清空标签容器
     tagContainer.innerHTML = '';
@@ -433,20 +404,6 @@ function fetchDoubanTags() {
        .catch(error => {
             console.error("获取豆瓣热门电视剧标签失败：", error);
         });
-
-        // 新增动漫标签获取
-    const dongmanTagsTarget = `https://movie.douban.com/j/search_tags?type=dongman`;
-    fetchDoubanData(dongmanTagsTarget)
-       .then(data => {
-            dongmanTags = data.tags;
-            if (doubanMovieTvCurrentSwitch === 'dongman') {
-                renderDoubanTags(dongmanTags);
-            }
-        })
-       .catch(error => {
-            console.error("获取豆瓣热门动漫标签失败：", error);
-        });
-        
 }
 
 // 渲染热门推荐内容
@@ -466,9 +423,7 @@ function renderRecommend(tag, pageLimit, pageStart) {
     container.classList.add("relative");
     container.insertAdjacentHTML('beforeend', loadingOverlayHTML);
     
-    // const target = `https://movie.douban.com/j/search_subjects?type=${doubanMovieTvCurrentSwitch}&tag=${tag}&sort=recommend&page_limit=${pageLimit}&page_start=${pageStart}`;
-    const type = doubanMovieTvCurrentSwitch === 'dongman' ? 'tv' : doubanMovieTvCurrentSwitch;
-    const target = `https://movie.douban.com/j/search_subjects?type=${type}&tag=${tag}&sort=recommend&page_limit=${pageLimit}&page_start=${pageStart}`;
+    const target = `https://movie.douban.com/j/search_subjects?type=${doubanMovieTvCurrentSwitch}&tag=${tag}&sort=recommend&page_limit=${pageLimit}&page_start=${pageStart}`;
     
     // 使用通用请求函数
     fetchDoubanData(target)
@@ -634,16 +589,8 @@ function showTagManageModal() {
     
     // 当前使用的标签类型和默认标签
     const isMovie = doubanMovieTvCurrentSwitch === 'movie';
-    // const currentTags = isMovie ? movieTags : tvTags;
-    // const defaultTags = isMovie ? defaultMovieTags : defaultTvTags;
-    const isDongman = doubanMovieTvCurrentSwitch === 'dongman';
-    const currentTags = isDongman ? dongmanTags : 
-                       doubanMovieTvCurrentSwitch === 'movie' ? movieTags : 
-                       tvTags;
-    const defaultTags = isDongman ? defaultDongmanTags : 
-                       doubanMovieTvCurrentSwitch === 'movie' ? defaultMovieTags : 
-                       defaultTvTags;
-
+    const currentTags = isMovie ? movieTags : tvTags;
+    const defaultTags = isMovie ? defaultMovieTags : defaultTvTags;
     
     // 模态框内容
     modal.innerHTML = `
