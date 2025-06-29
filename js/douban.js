@@ -160,8 +160,45 @@ function initDouban() {
     if (localStorage.getItem('doubanEnabled') === 'true') {
         renderRecommend(doubanCurrentTag, doubanPageSize, doubanPageStart);
     }
-}
+ 
+    // 设置豆瓣开关的初始状态
+    const doubanToggle = document.getElementById('doubanToggle');
+    if (doubanToggle) {
+        const isEnabled = localStorage.getItem('doubanEnabled') === 'true';
+        doubanToggle.checked = isEnabled;
+        
+        // 设置开关外观
+        const toggleBg = doubanToggle.nextElementSibling;
+        const toggleDot = toggleBg.nextElementSibling;
+        if (isEnabled) {
+            toggleBg.classList.add('bg-pink-600');
+            toggleDot.classList.add('translate-x-6');
+        }
+        
+        // 添加事件监听
+        doubanToggle.addEventListener('change', function(e) {
+            const isChecked = e.target.checked;
+            localStorage.setItem('doubanEnabled', isChecked);
+            
+            // 更新开关外观
+            if (isChecked) {
+                toggleBg.classList.add('bg-pink-600');
+                toggleDot.classList.add('translate-x-6');
+            } else {
+                toggleBg.classList.remove('bg-pink-600');
+                toggleDot.classList.remove('translate-x-6');
+            }
+            
+            // 更新显示状态
+            updateDoubanVisibility();
+        });
+        
+        // 初始更新显示状态
+        updateDoubanVisibility();
 
+        // 滚动到页面顶部
+        window.scrollTo(0, 0);
+    }
 // 渲染电影/电视剧切换器
 // ... existing code ...
 
