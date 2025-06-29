@@ -29,10 +29,12 @@ async function fetchVersion(url, errorMessage, options = {}) {
 // 版本检查函数
 async function checkForUpdates() {
     try {
+        // DEBUGGING: Log the state of window.APP_VERSION
+        console.log('[VersionCheck] typeof window.APP_VERSION:', typeof window.APP_VERSION);
+        console.log('[VersionCheck] window.APP_VERSION value:', window.APP_VERSION);
+
         // 获取当前版本
-        const currentVersion = await fetchVersion('/VERSION.txt', '获取当前版本失败', {
-            cache: 'no-store'
-        });
+        const currentVersion = window.APP_VERSION || "unknown_local_version"; // 直接从全局变量获取
         
         // 获取最新版本
         let latestVersion;

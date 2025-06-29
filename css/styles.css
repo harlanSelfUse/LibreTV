@@ -1,12 +1,36 @@
-/* 
-LibreTV 全局样式
-包含多个页面共享的基础样式
-对于特定页面的样式，请参考:
-- index.css: 首页特定样式
-- player.css: 播放器页面特定样式
-- watch.css: 重定向页面特定样式
-- modals.css: 模态框和提示框样式
-*/
+.window-controls {
+    display: none; /* 默认隐藏，在桌面端通过JS显示 */
+}
+
+.window-control-btn {
+    background: rgba(34, 34, 34, 0.7);
+    border: 1px solid rgba(51, 51, 51, 0.7);
+    border-radius: 4px;
+    padding: 4px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(2px);
+}
+
+.window-control-btn:hover {
+    background: rgba(51, 51, 51, 0.9);
+    border-color: rgba(85, 85, 85, 0.9);
+}
+
+#close-btn:hover {
+    background: rgba(220, 38, 38, 0.8);
+    border-color: rgba(220, 38, 38, 0.8);
+}
+
+.window-control-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+}
 
 .close-btn {
     position: absolute;
@@ -219,10 +243,21 @@ button, .card-hover {
     text-decoration: underline;
 }
 
-body {
+html, body { /* Applied to html as well for full coverage */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background: linear-gradient(180deg, var(--page-gradient-start), var(--page-gradient-end)); /* Unified gradient background */
+    color: var(--text-color); /* Default text color for contrast */
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+}
+
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top);
+  }
 }
 
 .container {
@@ -551,6 +586,7 @@ body {
 .filter-disabled > * {
     opacity: 1; /* 提高子元素不透明度，保证可见性 */
     z-index: 6; /* 确保内容在遮罩上方 */
+    position: relative;
 }
 
 /* 改进过滤器禁用状态下的描述样式 */
@@ -867,33 +903,6 @@ body {
     object-fit: cover;
 }
 
-/* 针对搜索结果卡片修改网格布局以适应横向卡片 */
-@media (max-width: 640px) {
-    #results {
-        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-    }
-}
-
-/* 响应式调整：在小屏幕上依然保持较好的视觉效果 */
-@media (min-width: 641px) and (max-width: 768px) {
-    #results {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-}
-
-/* 调整网格布局，减少每行卡片数量以适应更大尺寸的卡片 */
-@media (min-width: 769px) and (max-width: 1024px) {
-    #results {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    }
-}
-
-@media (min-width: 1025px) {
-    #results {
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    }
-}
-
 /* 优化卡片内元素间距 */
 .card-hover .p-2 {
     padding: 0.75rem; /* 增加内边距 */
@@ -931,99 +940,149 @@ body {
     transform: translateX(-50%) translateY(-100%);
 }
 
-/* 详情模态框样式优化 */
-#modal .modal-detail-info {
-    background: linear-gradient(135deg, #0a0a0a, #111);
-    border: 1px solid #222;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
+/* Bottom Navigation Bar Styles */
+#bottomNav {
+    /* Tailwind classes are used in HTML for basic layout:
+       fixed bottom-0 left-0 right-0 bg-[#111] border-t border-[#333] flex justify-around items-center h-16 z-50 */
 }
 
-#modal .detail-grid {
+.nav-item {
+    /* Tailwind classes used in HTML:
+       flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors p-2 */
+    flex-grow: 1; /* Ensure items take up equal space */
+    cursor: pointer;
+}
+
+.nav-item.active {
+    color: #DB2777; /* pink-600, or var(--accent-color) */
+}
+
+.nav-item.active svg {
+    stroke: #DB2777; /* pink-600 */
+}
+
+/* Page Content Styling */
+.page-content {
+    /* Tailwind 'hidden' class is used to hide inactive pages */
+    /* Tailwind 'container mx-auto px-4 py-8' used for basic layout */
+    animation: fadeInPage 0.3s ease-in-out;
+}
+
+@keyframes fadeInPage {
+    from { opacity: 0; /*transform: translateY(10px); Optional: add a slight upward movement */ }
+    to { opacity: 1; /*transform: translateY(0);*/ }
+}
+
+/* Remove old panel styles if they are no longer needed or conflict */
+/* 
+.settings-panel, .history-panel {
+    width: 320px; 
+    transform: translateX(100%); 
+    transition: transform 0.3s ease-in-out;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+}
+
+.history-panel {
+    transform: translateX(-100%); 
+}
+
+.settings-panel.show, .history-panel.show {
+    transform: translateX(0);
+}
+*/
+
+/* Carousel Styles */
+.carousel-section {
+    /* Optional: add margin or padding if not handled by space-y on parent */
+}
+
+.carousel-container {
+    /* Tailwind: overflow-x-auto pb-2 */
+    /* Ensures horizontal scrolling and some padding at the bottom for scrollbar */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.carousel-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+}
+
+.carousel-container::-webkit-scrollbar {
+    height: 8px;
+}
+.carousel-container::-webkit-scrollbar-track {
+    background: #1f2937; /* bg-gray-800 */
+    border-radius: 4px;
+}
+.carousel-container::-webkit-scrollbar-thumb {
+    background: #4b5563; /* bg-gray-600 */
+    border-radius: 4px;
+}
+.carousel-container::-webkit-scrollbar-thumb:hover {
+    background: #6b7280; /* bg-gray-500 */
+}
+
+
+.carousel-track {
+    /* Tailwind: flex space-x-3 */
+    /* Ensures items are in a row with spacing */
+    /* min-width: max-content; /* Might be needed if flex items don't force width */
+}
+
+/* Individual card styling within a carousel is handled by existing .card-hover and specific overrides in renderDoubanCardsAsCarousel if any */
+/* Card width for carousel is set inline via Tailwind in renderDoubanCardsAsCarousel (e.g., w-36 sm:w-40) */
+.carousel-track .flex-shrink-0 {
+    /* Ensures cards don't shrink and maintain their specified width */
+}
+
+/* Responsive grid for item listings */
+#douban-filter-items-grid,
+#category-items-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    font-size: 0.875rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem; /* Corresponds to gap-4 in Tailwind */
 }
 
-@media (min-width: 768px) {
-    #modal .detail-grid {
-        grid-template-columns: 1fr 1fr;
+#results { /* Search results page uses larger cards */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; /* Corresponds to gap-4 in Tailwind */
+}
+
+/* Mobile Bottom Navigation Bar Specific Styles */
+#mobileBottomNav button.active svg {
+    stroke: #DB2777; /* pink-600 */
+}
+
+#mobileBottomNav button.active span {
+    color: #DB2777; /* pink-600 */
+}
+
+/* Add padding to the bottom of the main content area when the mobile nav is visible */
+@media (max-width: 767px) { /* md breakpoint in Tailwind */
+    body > main.container {
+        padding-bottom: 4rem; /* h-16 is 4rem */
     }
 }
 
-#modal .detail-item {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+/* Custom Fullscreen Styles for DPlayer */
+body.dplayer-custom-fullscreen-mode .player-header {
+    display: none !important;
 }
 
-#modal .detail-label {
-    color: #9ca3af;
-    font-weight: 500;
-    min-width: 3rem;
-    flex-shrink: 0;
+body.dplayer-custom-fullscreen-mode {
+    overflow: hidden !important; /* 防止滚动条出现 */
 }
 
-#modal .detail-value {
-    color: white;
-    flex: 1;
-    word-break: break-word;
-}
-
-#modal .detail-desc {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #333;
-}
-
-#modal .detail-desc-content {
-    color: #d1d5db;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    max-height: 8rem;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #444 #222;
-}
-
-#modal .detail-desc-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-#modal .detail-desc-content::-webkit-scrollbar-track {
-    background: #222;
-    border-radius: 4px;
-}
-
-#modal .detail-desc-content::-webkit-scrollbar-thumb {
-    background-color: #444;
-    border-radius: 4px;
-}
-
-/* 集数统计信息样式 */
-#modal .episode-stats {
-    color: #9ca3af;
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-/* 移动端优化 */
-@media (max-width: 640px) {
-    #modal .detail-grid {
-        gap: 0.5rem;
-        font-size: 0.8rem;
-    }
-    
-    #modal .detail-label {
-        min-width: 2.5rem;
-    }
-    
-    #modal .detail-desc-content {
-        max-height: 6rem;
-        font-size: 0.8rem;
-    }
+/* 确保播放器容器在自定义全屏模式下能覆盖所有内容 */
+body.dplayer-custom-fullscreen-mode #playerContainer,
+body.dplayer-custom-fullscreen-mode .dplayer-video-wrap,
+body.dplayer-custom-fullscreen-mode .dplayer-video {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 2147483646 !important; /* 尝试使用一个非常高的 z-index */
+    background: #000 !important;
 }
