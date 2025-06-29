@@ -163,6 +163,9 @@ function initDouban() {
 }
 
 // 渲染电影/电视剧切换器
+// ... existing code ...
+
+// 渲染电影/电视剧切换器
 function renderDoubanMovieTvSwitch() {
     // 获取切换按钮元素
     const movieToggle = document.getElementById('douban-movie-toggle');
@@ -171,17 +174,17 @@ function renderDoubanMovieTvSwitch() {
 
     if (!movieToggle || !tvToggle || !dmToggle) return;
 
-    movieToggle.addEventListener('click', function () {
+    movieToggle.addEventListener('click', function() {
         if (doubanMovieTvCurrentSwitch !== 'movie') {
             // 更新按钮样式
             movieToggle.classList.add('bg-pink-600', 'text-white');
             movieToggle.classList.remove('text-gray-300');
-
+            
             tvToggle.classList.remove('bg-pink-600', 'text-white');
             tvToggle.classList.add('text-gray-300');
             dmToggle.classList.remove('bg-pink-600', 'text-white');
             dmToggle.classList.add('text-gray-300');
-
+            
             doubanMovieTvCurrentSwitch = 'movie';
             doubanCurrentTag = '热门';
             doubanPageStart = 0;
@@ -191,26 +194,26 @@ function renderDoubanMovieTvSwitch() {
 
             // 换一批按钮事件监听
             setupDoubanRefreshBtn();
-
+            
             // 初始加载热门内容
             if (localStorage.getItem('doubanEnabled') === 'true') {
                 renderRecommend(doubanCurrentTag, doubanPageSize, doubanPageStart);
             }
         }
     });
-
+    
     // 电视剧按钮点击事件
-    tvToggle.addEventListener('click', function () {
+    tvToggle.addEventListener('click', function() {
         if (doubanMovieTvCurrentSwitch !== 'tv') {
             // 更新按钮样式
             tvToggle.classList.add('bg-pink-600', 'text-white');
             tvToggle.classList.remove('text-gray-300');
-
+            
             movieToggle.classList.remove('bg-pink-600', 'text-white');
             movieToggle.classList.add('text-gray-300');
             dmToggle.classList.remove('bg-pink-600', 'text-white');
             dmToggle.classList.add('text-gray-300');
-
+            
             doubanMovieTvCurrentSwitch = 'tv';
             doubanCurrentTag = '热门';
             doubanPageStart = 0;
@@ -220,7 +223,7 @@ function renderDoubanMovieTvSwitch() {
 
             // 换一批按钮事件监听
             setupDoubanRefreshBtn();
-
+            
             // 初始加载热门内容
             if (localStorage.getItem('doubanEnabled') === 'true') {
                 renderRecommend(doubanCurrentTag, doubanPageSize, doubanPageStart);
@@ -229,17 +232,17 @@ function renderDoubanMovieTvSwitch() {
     });
 
     // 动漫按钮点击事件
-    dmToggle.addEventListener('click', function () {
+    dmToggle.addEventListener('click', function() {
         if (doubanMovieTvCurrentSwitch !== 'dongman') {
             // 更新按钮样式
             dmToggle.classList.add('bg-pink-600', 'text-white');
             dmToggle.classList.remove('text-gray-300');
-
+            
             movieToggle.classList.remove('bg-pink-600', 'text-white');
             movieToggle.classList.add('text-gray-300');
             tvToggle.classList.remove('bg-pink-600', 'text-white');
             tvToggle.classList.add('text-gray-300');
-
+            
             doubanMovieTvCurrentSwitch = 'dongman';
             doubanCurrentTag = '热门';
             doubanPageStart = 0;
@@ -249,7 +252,7 @@ function renderDoubanMovieTvSwitch() {
 
             // 换一批按钮事件监听
             setupDoubanRefreshBtn();
-
+            
             // 初始加载热门内容
             if (localStorage.getItem('doubanEnabled') === 'true') {
                 renderRecommend(doubanCurrentTag, doubanPageSize, doubanPageStart);
@@ -257,6 +260,8 @@ function renderDoubanMovieTvSwitch() {
         }
     });
 }
+
+// ... existing code ...
 
 // 渲染豆瓣标签选择器
 function renderDoubanTags(tags) {
